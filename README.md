@@ -34,6 +34,7 @@ To improve communication and efficiency in handling maintenance issues.
 - Kasa Tlotliso
 - Vuyisile Fihlo
 - Tabi Malefetsane
+- Tsebano Stemer
 
 ## Current stage
 Phase one:
