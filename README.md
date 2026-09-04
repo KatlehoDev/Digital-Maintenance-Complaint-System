@@ -27,7 +27,7 @@ It eliminates manual reporting (emails/messages) by providing a centralized syst
 To improve communication and efficiency in handling maintenance issues.
 
 ## Group Members
-- Katleho Mphomela
+-Katleho Mphomela
 - Sisekelo Mtshali
 - Asande Mkabela
 - Thabang Motaung
