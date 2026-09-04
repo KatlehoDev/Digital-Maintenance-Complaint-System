@@ -1,0 +1,10 @@
+# Flutter **/build/ .dart_tool/ .flutter-plugins .flutter-plugins-dependencies *.g.dart # ASP.NET / .NET bin/ obj/ *.user appsettings.Development.json # Environment/secrets .env *.env supabase_config.dart # IDE .vscode/ .idea/
+
+
+
+
+
+
+
+
+Add .gitignore
