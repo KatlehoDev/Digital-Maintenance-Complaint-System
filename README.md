@@ -34,3 +34,8 @@ To improve communication and efficiency in handling maintenance issues.
 - Kasa Tlotliso
 - Vuyisile Fihlo
 - Tabi Malefetsane
+
+## Current stage
+Phase one:
+Planning and requirements analysis
+Feasibility and Risk analysis
