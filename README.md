@@ -31,9 +31,7 @@ To improve communication and efficiency in handling maintenance issues.
 - Sisekelo Mtshali
 - Asande Mkabela
 - Thabang Motaung
-- Kasa Tlotliso Praise
 - Vuyisile Fihlo
-- Tabi Malefetsane
 - Tsebano Stemer
 
 ## Current stage
