@@ -1,0 +1,28 @@
+name: cut_maintenance
+description: Digital Maintenance Complaint System
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  supabase_flutter: ^2.5.0
+  image_picker: ^1.1.1
+  intl: ^0.19.0
+  flutter_spinkit: ^5.2.2
+  camera: ^0.12.2
+  uuid: ^4.6.0
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/cut_logo.png
+    - assets/cut_campus.png
+   
