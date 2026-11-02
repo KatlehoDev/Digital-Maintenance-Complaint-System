@@ -1,0 +1,136 @@
+﻿@model IEnumerable<CUT_Maintenance_Admin.Models.Complaint>
+@using CUT_Maintenance_Admin.Data
+@{
+    ViewData["Title"] = "All Complaints";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-4">
+    <div>
+        <h4 class="fw-bold mb-0">Complaints Details</h4>
+        <p class="text-muted mb-0">Here is an overview of the maintenance requests and activity</p>
+    </div>
+    @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"] as string))
+    {
+        <div class="alert alert-info mb-0 py-2 px-3 border-0 shadow-sm">
+            Showing results for: <strong>@ViewData["CurrentFilter"]</strong>
+            <a asp-action="AllComplaints" class="ms-2 text-decoration-none fw-bold">Clear</a>
+        </div>
+    }
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="table-responsive table-custom mb-4">
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Complaints</th>
+                <th>Location</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Date Submitted</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Any())
+            {
+                @foreach (var item in Model)
+                {
+                    var isOverdue = item.Deadline < DateTime.UtcNow && item.Status != ComplaintStatus.closed && item.Status != ComplaintStatus.verified && item.Status != ComplaintStatus.rejected && item.Status != ComplaintStatus.withdrawn;
+
+                    <tr>
+                        <td class="fw-bold">@item.Reference</td>
+                        <td>@item.Title</td>
+                        <td>@item.Residence?.Name, Room @item.Location</td>
+                        <td>@item.Category?.Name</td>
+
+                        <td>
+                            @if (item.Status == ComplaintStatus.reported || item.Status == ComplaintStatus.withdrawn || item.Status == ComplaintStatus.rejected)
+                            {
+                                <span class="text-muted small">Not set</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-@(item.Priority == PriorityLevel.high ? "danger" : item.Priority == PriorityLevel.urgent ? "dark" : item.Priority == PriorityLevel.medium ? "warning text-dark" : "secondary")">
+                                    @item.Priority.ToString()
+                                </span>
+                            }
+                        </td>
+
+                        <td>
+                            @if (item.Status == ComplaintStatus.withdrawn)
+                            {
+                                <span class="badge bg-secondary">Withdrawn</span>
+                            }
+                            else if (item.Status == ComplaintStatus.rejected)
+                            {
+                                <span class="badge bg-dark">Rejected</span>
+                            }
+                            else if (isOverdue)
+                            {
+                                <span class="badge bg-danger">Overdue</span>
+                            }
+                            else if (item.Status == ComplaintStatus.reported)
+                            {
+                                <span class="badge-open">Open</span>
+                            }
+                            else if (item.Status == ComplaintStatus.assigned)
+                            {
+                                <span class="badge-assigned">Assigned</span>
+                            }
+                            else if (item.Status == ComplaintStatus.in_progress)
+                            {
+                                <span class="badge-inprogress">In Progress</span>
+                            }
+                            else if (item.Status == ComplaintStatus.completed)
+                            {
+                                <span class="text-info fw-bold">Completed</span>
+                            }
+                            else if (item.Status == ComplaintStatus.reopened)
+                            {
+                                <span class="text-danger fw-bold">Reopened</span>
+                            }
+                            else if (item.Status == ComplaintStatus.verified || item.Status == ComplaintStatus.closed)
+                            {
+                                <span class="text-success fw-bold">Verified</span>
+                            }
+                            else
+                            {
+                                <span>@item.Status.ToString()</span>
+                            }
+                        </td>
+                        <td>@item.CreatedAt.ToString("dd MMMM yyyy, HH:mm")</td>
+                        <td>
+                            @if (item.Status == ComplaintStatus.reported)
+                            {
+                                <a asp-controller="Dashboard" asp-action="Assign" asp-route-id="@item.Id" class="btn-view">Assign</a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Dashboard" asp-action="Details" asp-route-id="@item.Id" class="btn-view bg-secondary text-white">View Details</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="8" class="text-center py-5 text-muted">
+                        <h5>No complaints found.</h5>
+                        <p class="mb-0">Try adjusting your search query.</p>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

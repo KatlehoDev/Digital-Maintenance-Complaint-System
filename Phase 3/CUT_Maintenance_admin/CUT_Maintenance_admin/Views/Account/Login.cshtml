@@ -1,0 +1,79 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login - CUT Maintenance</title>
+    <!-- Load Bootstrap directly from CDN for styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+            body {
+                background-color: #f4f7f6;
+                height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            .login-card {
+                width: 420px;
+                padding: 40px;
+                border-radius: 15px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+                background: white;
+            }
+
+            .btn-primary {
+                background-color: #0057B8;
+                border-color: #0057B8;
+            }
+
+                .btn-primary:hover {
+                    background-color: #00408a;
+                    border-color: #00408a;
+                }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="text-center mb-4">
+            <!-- Replace this with your actual CUT logo if you have one -->
+            <h3 style="color: #0057B8; font-weight: bold; margin-bottom: 0;">CUT Admin Portal</h3>
+            <p class="text-muted small">Estate & Infrastructure</p>
+        </div>
+
+        <!-- Display error message if login fails -->
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger text-center py-2">
+                @ViewBag.Error
+            </div>
+        }
+
+        <form asp-action="Login" method="post">
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Email address</label>
+                <input type="email" name="email" class="form-control form-control-lg" required placeholder="Enter your email adress" />
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Password</label>
+                <input type="password" name="password" class="form-control form-control-lg" required placeholder="Enter password" />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-3 fw-bold" style="border-radius: 10px;">
+                Sign In
+            </button>
+        </form>
+
+        <div class="text-center mt-4 text-muted small">
+           
+        </div>
+    </div>
+</body>
+</html>

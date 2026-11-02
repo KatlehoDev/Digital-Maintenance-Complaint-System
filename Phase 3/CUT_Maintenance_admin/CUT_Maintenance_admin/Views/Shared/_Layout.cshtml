@@ -1,0 +1,339 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Digital Maintenance System</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+            body {
+                background-color: #F5F6F8;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            .sidebar {
+                background-color: #0084D6;
+                color: white;
+                min-height: 100vh;
+                padding-top: 20px;
+                position: fixed;
+                width: 250px;
+            }
+
+            .sidebar-brand {
+                font-size: 1.2rem;
+                font-weight: bold;
+                text-align: center;
+                margin-bottom: 30px;
+                padding-bottom: 20px;
+                border-bottom: 1px solid rgba(255,255,255,0.2);
+            }
+
+                .sidebar-brand i {
+                    font-size: 2rem;
+                    display: block;
+                    margin-bottom: 10px;
+                }
+
+            .sidebar a {
+                color: #E0E0E0;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                padding: 15px 25px;
+                font-size: 1rem;
+                margin-bottom: 5px;
+                transition: 0.2s;
+            }
+
+                .sidebar a:hover, .sidebar a.active {
+                    background-color: #0069B3;
+                    color: white;
+                    border-radius: 8px;
+                    margin: 0 10px;
+                }
+
+                .sidebar a i {
+                    width: 30px;
+                    text-align: center;
+                    margin-right: 10px;
+                    font-size: 1.1rem;
+                }
+
+            .main-content {
+                margin-left: 250px;
+                padding: 0;
+                min-height: 100vh;
+            }
+
+            .top-navbar {
+                background-color: #EAEAEA;
+                padding: 15px 30px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .search-bar {
+                background: white;
+                border-radius: 20px;
+                padding: 8px 15px;
+                display: flex;
+                align-items: center;
+                width: 400px;
+            }
+
+                .search-bar input {
+                    border: none;
+                    outline: none;
+                    width: 100%;
+                    margin-left: 10px;
+                    background: transparent;
+                }
+
+            .page-content {
+                padding: 30px;
+            }
+
+            .stat-card {
+                background: #E5E5E5;
+                border: 1px solid #CCC;
+                border-radius: 12px;
+                padding: 20px;
+                height: 100%;
+            }
+
+            .stat-title {
+                font-size: 0.9rem;
+                color: #333;
+                margin-bottom: 10px;
+                font-weight: 600;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .stat-trend {
+                font-size: 0.8rem;
+                color: #1E7E34;
+            }
+
+            .table-custom {
+                background: white;
+                border-radius: 10px;
+                overflow: hidden;
+                border: 1px solid #DDD;
+            }
+
+                .table-custom thead {
+                    background: #F9F9F9;
+                }
+
+                .table-custom th {
+                    font-weight: 600;
+                    color: #333;
+                    border-bottom: 2px solid #EEE;
+                    padding: 15px;
+                }
+
+                .table-custom td {
+                    padding: 15px;
+                    vertical-align: middle;
+                }
+
+            .btn-view {
+                background: #0084D6;
+                color: white;
+                border-radius: 5px;
+                padding: 5px 15px;
+                font-size: 0.85rem;
+                border: none;
+                text-decoration: none;
+            }
+
+                .btn-view:hover {
+                    background: #0069B3;
+                    color: white;
+                }
+
+            .badge-assigned {
+                color: #0084D6;
+                font-weight: normal;
+            }
+
+            .badge-inprogress {
+                color: #1E7E34;
+                font-weight: normal;
+            }
+
+            .badge-open {
+                color: #D4A017;
+                font-weight: normal;
+            }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fa-solid fa-house-chimney"></i>
+            Digital Maintenance<br>System
+        </div>
+        <a asp-controller="Dashboard" asp-action="Dashboard" class="@(ViewContext.RouteData.Values["Action"].ToString() == "Dashboard" ? "active" : "")">
+            <i class="fa-solid fa-house"></i> Dashboard
+        </a>
+        <a asp-controller="Dashboard" asp-action="AllComplaints" class="@(ViewContext.RouteData.Values["Action"].ToString() == "AllComplaints" || ViewContext.RouteData.Values["Action"].ToString() == "Assign" || ViewContext.RouteData.Values["Action"].ToString() == "Details" ? "active" : "")">
+            <i class="fa-solid fa-ticket"></i> All Complaints
+        </a>
+        <a asp-controller="Dashboard" asp-action="ManageCategories" class="@(ViewContext.RouteData.Values["Action"].ToString() == "ManageCategories" ? "active" : "")">
+            <i class="fa-solid fa-list-check"></i> Manage Categories
+        </a>
+        <a asp-controller="Dashboard" asp-action="ManageResidences" class="@(ViewContext.RouteData.Values["Action"].ToString() == "ManageResidences" ? "active" : "")">
+            <i class="fa-solid fa-building"></i> Residences
+        </a>
+        <a asp-controller="Dashboard" asp-action="Users" class="@(ViewContext.RouteData.Values["Action"].ToString() == "Users" ? "active" : "")">
+            <i class="fa-solid fa-user"></i> Users
+        </a>
+        <a asp-controller="Dashboard" asp-action="Analytics" class="@(ViewContext.RouteData.Values["Action"].ToString() == "Analytics" ? "active" : "")">
+            <i class="fa-solid fa-chart-simple"></i> Analytics
+        </a>
+
+        <div style="position: absolute; bottom: 20px; width: 100%;">
+            <a asp-controller="Account" asp-action="Logout">
+                <i class="fa-solid fa-power-off"></i> Log Out
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="top-navbar">
+            @if (ViewContext.RouteData.Values["Action"].ToString() == "AllComplaints")
+            {
+                <form asp-controller="Dashboard" asp-action="AllComplaints" method="get" class="search-bar mb-0">
+                    <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                    <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Search complaints by ID, title or location..." />
+                </form>
+            }
+            else
+            {
+                <div></div>
+            }
+
+            <div class="dropdown" id="notificationDropdownContainer">
+                <button class="btn btn-link text-dark p-0 position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
+                    <i class="fa-solid fa-bell" style="font-size: 1.3rem; color: #555;"></i>
+
+                    <span id="unreadBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem; transform: translate(-50%, -20%) !important; @(ViewBag.UnreadCount > 0 ? "" : "display: none;")">
+                        @ViewBag.UnreadCount
+                    </span>
+                </button>
+
+                <ul class="dropdown-menu dropdown-menu-end shadow" id="notificationMenu" style="width: 320px; max-height: 400px; overflow-y: auto;">
+                    <li class="px-3 py-2 border-bottom bg-light">
+                        <h6 class="mb-0 fw-bold">Notifications</h6>
+                    </li>
+
+                    <div id="notificationListContainer">
+                        @if (ViewBag.NotificationList != null && ViewBag.NotificationList.Count > 0)
+                        {
+                            @foreach (var notif in ViewBag.NotificationList as List<CUT_Maintenance_Admin.Models.Notification>)
+                            {
+                                <li class="border-bottom">
+                                    <div class="d-flex justify-content-between align-items-center p-3 @(notif.IsRead ? "bg-white" : "bg-light")">
+                                        <div class="me-2" style="font-size: 0.85rem;">
+                                            <div class="text-dark">@notif.Message</div>
+                                            <div class="text-muted mt-1" style="font-size: 0.7rem;">
+                                                @notif.CreatedAt.ToString("dd MMM, HH:mm")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="p-4 text-center text-muted small" id="noNotifText">
+                                No new notifications.
+                            </li>
+                        }
+                    </div>
+                </ul>
+            </div>
+        </div>
+
+        <div class="page-content">
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- AJAX POLLING SCRIPT -->
+    <script>
+            // --- NOTIFICATION POLLING ---
+            function fetchNotifications() {
+                fetch('/Dashboard/GetNotifications')
+                    .then(response => response.json())
+                    .then(data => {
+                        const badge = document.getElementById('unreadBadge');
+                        if (data.unreadCount > 0) {
+                            badge.innerText = data.unreadCount;
+                            badge.style.display = 'block';
+                        } else {
+                            badge.style.display = 'none';
+                        }
+
+                        const container = document.getElementById('notificationListContainer');
+                        if (data.notifications.length === 0) {
+                            container.innerHTML = '<li class="p-4 text-center text-muted small">No new notifications.</li>';
+                        } else {
+                            let html = '';
+                            data.notifications.forEach(n => {
+                                const bgClass = n.isRead ? 'bg-white' : 'bg-light';
+                                html += `
+                                            <li class="border-bottom">
+                                                <div class="d-flex justify-content-between align-items-center p-3 ${bgClass}">
+                                                    <div class="me-2" style="font-size: 0.85rem;">
+                                                        <div class="text-dark">${n.message}</div>
+                                                        <div class="text-muted mt-1" style="font-size: 0.7rem;">${n.createdAt}</div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        `;
+                            });
+                            container.innerHTML = html;
+                        }
+                    })
+                    .catch(error => console.log('Error fetching notifications:', error));
+            }
+
+            setInterval(fetchNotifications, 3000);
+            document.addEventListener('DOMContentLoaded', fetchNotifications);
+
+
+            // --- LIVE DASHBOARD / TABLE REFRESH POLLING ---
+            let initialTotal = @(ViewBag.Total ?? 0); // Store initial count when page loads
+
+            function checkForNewComplaints() {
+                fetch('/Dashboard/GetDashboardData')
+                    .then(response => response.json())
+                    .then(data => {
+                        // If the total count is different from what was on the screen, reload the page
+                        if (data.total !== initialTotal) {
+                            window.location.reload();
+                        }
+                    })
+                    .catch(error => console.log('Error checking for new complaints:', error));
+            }
+
+            setInterval(checkForNewComplaints, 5000); // Check every 5 seconds
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

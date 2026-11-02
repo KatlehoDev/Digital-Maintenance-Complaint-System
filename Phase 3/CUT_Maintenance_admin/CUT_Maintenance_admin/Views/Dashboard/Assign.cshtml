@@ -1,0 +1,141 @@
+﻿@model CUT_Maintenance_Admin.Models.Complaint
+@using CUT_Maintenance_Admin.Data
+@{
+    ViewData["Title"] = "Assign Complaint";
+    var workers = ViewBag.Workers as List<CUT_Maintenance_Admin.Models.Profile>;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-4">
+    <div>
+        <h4 class="fw-bold mb-1">Assign Maintenance</h4>
+        <p class="text-muted mb-0">Select a maintenance staff member to handle this complaint.</p>
+    </div>
+    <a asp-action="AllComplaints" class="btn btn-outline-secondary btn-sm"><i class="fa-solid fa-arrow-left"></i> Back to All Complaints</a>
+</div>
+
+<div class="row">
+    <!-- Left Side: Complaint Details -->
+    <div class="col-md-7">
+        <div class="card mb-4 shadow-sm border-0 bg-light">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="badge bg-info text-dark px-3 py-2 rounded-pill">Open</span>
+                    <span class="text-muted fw-bold">Complaints ID: @Model.Reference</span>
+                </div>
+                <h5 class="fw-bold mb-3 text-uppercase">@Model.Title</h5>
+
+                <div class="d-flex mb-3 text-muted small">
+                    <div class="me-4"><i class="fa-solid fa-location-dot me-1"></i> Location: @Model.Residence?.Name, @Model.Location</div>
+                </div>
+
+                <div class="bg-white p-3 rounded border mb-3">
+                    <strong class="d-block mb-1"><i class="fa-solid fa-file-lines me-1"></i> Description</strong>
+                    <span class="text-muted small">@Model.Description</span>
+                </div>
+
+                <!-- REPORTER PHOTO SECTION -->
+                @if (Model.Images != null && Model.Images.Any())
+                {
+                    <div class="bg-white p-3 rounded border mb-3">
+                        <strong class="d-block mb-2"><i class="fa-solid fa-camera me-1"></i> Reporter Photo</strong>
+                        <div class="d-flex gap-2 flex-wrap">
+                            @foreach (var img in Model.Images)
+                            {
+                                <a href="@img.ImageUrl" target="_blank">
+                                    <img src="@img.ImageUrl" style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc;" />
+                                </a>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <div class="bg-white p-3 rounded border">
+                    <strong class="d-block mb-1"><i class="fa-solid fa-user me-1"></i> Reporter Details</strong>
+                    <div class="text-muted small">Name: @(Model.Reporter?.FullName ?? "Unknown")</div>
+                    <div class="text-muted small">Email: @(Model.Reporter?.Email ?? "Unknown")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Side: Assignment Form -->
+    <div class="col-md-5">
+        <div class="card shadow-sm border-0 bg-light">
+            <div class="card-body p-4">
+                <div class="alert alert-info border-0 shadow-sm mb-4">
+                    <i class="fa-solid fa-circle-info me-2"></i> This complaint will be assigned to a maintenance staff member.
+                </div>
+
+                <form asp-controller="Dashboard" asp-action="Assign" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Select Staff Member</label>
+                        <select name="workerId" class="form-select bg-white" required>
+                            <option value="">Choose a maintenance staff member</option>
+                            @if (workers != null && workers.Any())
+                            {
+                                @foreach (var w in workers)
+                                {
+                                    var displayName = string.IsNullOrEmpty(w.FullName) ? w.Email : w.FullName;
+                                    <option value="@w.Id">@displayName (Available)</option>
+                                }
+                            }
+                            else
+                            {
+                                <option value="" disabled>No workers found</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Set Priority</label>
+                        <select name="priority" class="form-select bg-white" required>
+                            @if (Model.Priority == PriorityLevel.low)
+                            {
+                                <option value="low" selected>Low</option>
+                            }
+                            else
+                            {
+                                <option value="low">Low</option>
+                            }
+                            @if (Model.Priority == PriorityLevel.medium)
+                            {
+                                <option value="medium" selected>Medium</option>
+                            }
+                            else
+                            {
+                                <option value="medium">Medium</option>
+                            }
+                            @if (Model.Priority == PriorityLevel.high)
+                            {
+                                <option value="high" selected>High</option>
+                            }
+                            else
+                            {
+                                <option value="high">High</option>
+                            }
+                            @if (Model.Priority == PriorityLevel.urgent)
+                            {
+                                <option value="urgent" selected>Urgent</option>
+                            }
+                            else
+                            {
+                                <option value="urgent">Urgent</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Set Deadline</label>
+                        <input type="date" name="deadline" class="form-control bg-white" required value="@DateTime.UtcNow.AddDays(3).ToString("yyyy-MM-dd")" />
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <button type="submit" class="btn btn-primary px-4 w-100" style="background-color: #0084D6;">Assign Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

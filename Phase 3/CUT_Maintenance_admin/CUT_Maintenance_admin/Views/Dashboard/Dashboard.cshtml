@@ -1,0 +1,121 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+<h3 class="fw-bold mb-4">Greetings, Admin</h3>
+<p class="text-muted mb-4">Here is an overview of the maintenance requests and activity</p>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- REJECTED / WITHDRAWN ALERTS -->
+@if (ViewBag.RejectedCount > 0 || ViewBag.WithdrawnCount > 0)
+{
+    <div class="row mb-4">
+        @if (ViewBag.RejectedCount > 0)
+        {
+            <div class="col-md-6">
+                <div class="alert alert-dark border-0 shadow-sm d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="alert-heading fw-bold mb-0"><i class="fa-solid fa-circle-xmark me-2"></i>Action Required: Rejected Jobs</h6>
+                        <span class="small">@ViewBag.RejectedCount job(s) were rejected by maintenance and need reassignment.</span>
+                    </div>
+                    <a asp-action="AllComplaints" class="btn btn-sm btn-outline-dark fw-bold">View</a>
+                </div>
+            </div>
+        }
+        @if (ViewBag.WithdrawnCount > 0)
+        {
+            <div class="col-md-6">
+                <div class="alert alert-secondary border-0 shadow-sm d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="alert-heading fw-bold mb-0"><i class="fa-solid fa-ban me-2"></i>Complaints Withdrawn</h6>
+                        <span class="small">@ViewBag.WithdrawnCount complaint(s) were withdrawn by HCMs.</span>
+                    </div>
+                    <a asp-action="AllComplaints" class="btn btn-sm btn-outline-secondary fw-bold">View</a>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<!-- Stats Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-title"><i class="fa-regular fa-file-lines me-2"></i>Total Complaints</div>
+            <div class="stat-value">@ViewBag.Total</div>
+            <div class="stat-trend"><i class="fa-solid fa-arrow-up"></i> 12%</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-title"><i class="fa-regular fa-file me-2"></i>Open</div>
+            <div class="stat-value">@ViewBag.Open</div>
+            <div class="stat-trend"><i class="fa-solid fa-arrow-up"></i> 3%</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-title"><i class="fa-solid fa-gears me-2"></i>In Progress</div>
+            <div class="stat-value">@ViewBag.InProgress</div>
+            <div class="stat-trend"><i class="fa-solid fa-arrow-up"></i> 12%</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-title"><i class="fa-regular fa-circle-check me-2"></i>Resolved</div>
+            <div class="stat-value">@ViewBag.Resolved</div>
+            <div class="stat-trend"><i class="fa-solid fa-arrow-up"></i> 12%</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Quick Links -->
+    <div class="col-md-5">
+        <div class="p-4 bg-light rounded" style="height: 100%;">
+            <h6 class="fw-bold mb-3">Quick Links</h6>
+            <!-- UPDATED BUTTON HERE -->
+            <a asp-controller="Dashboard" asp-action="AllComplaints" class="btn btn-light text-start w-100 mb-2 shadow-sm border">
+                <i class="fa-solid fa-ticket me-2"></i> View All Complaints
+            </a>
+            <a asp-controller="Dashboard" asp-action="ManageCategories" class="btn btn-light text-start w-100 mb-2 shadow-sm border">
+                <i class="fa-solid fa-list-check me-2"></i> Manage Categories
+            </a>
+            <a asp-controller="Dashboard" asp-action="Analytics" class="btn btn-light text-start w-100 shadow-sm border">
+                <i class="fa-solid fa-chart-simple me-2"></i> Generate a report
+            </a>
+        </div>
+    </div>
+    
+    <!-- Recent Activity -->
+    <div class="col-md-7">
+        <div class="p-4 bg-light rounded" style="height: 100%;">
+            <h6 class="fw-bold mb-3">Recent Activity</h6>
+            <ul class="list-unstyled mb-0">
+                @if (ViewBag.RecentHistory != null)
+                {
+                    @foreach (var item in ViewBag.RecentHistory as List<CUT_Maintenance_Admin.Models.ComplaintHistory>)
+                    {
+                        <li class="mb-3 d-flex">
+                            <div class="me-3 mt-1"><i class="fa-solid fa-circle text-dark" style="font-size: 0.6rem;"></i></div>
+                            <div>
+                                <div class="fw-bold text-dark">@item.Action</div>
+                                <div class="text-muted small">by @(item.User?.FullName ?? "System") - @item.CreatedAt.ToString("hh:mm tt")</div>
+                            </div>
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="text-muted">No recent activity.</li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

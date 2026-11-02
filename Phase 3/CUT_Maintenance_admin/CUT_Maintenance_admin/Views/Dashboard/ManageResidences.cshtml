@@ -1,0 +1,71 @@
+﻿@model IEnumerable<CUT_Maintenance_Admin.Models.Residence>
+@{
+    ViewData["Title"] = "Manage Residences";
+}
+<h4 class="fw-bold mb-1">Manage Residences</h4>
+<p class="text-muted mb-4">Add or remove student residences.</p>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="table-responsive table-custom">
+            <div class="d-flex justify-content-between align-items-center p-3 bg-white border-bottom">
+                <h6 class="mb-0 fw-bold">Residences (@Model.Count())</h6>
+            </div>
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Residence Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-muted small">@item.Id.ToString().Substring(0, 8)...</td>
+                            <td class="fw-bold">@item.Name</td>
+                            <td>
+                                <form asp-action="DeleteResidence" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this residence?');">
+                                    <button type="submit" class="btn btn-link text-muted p-0 m-0" style="text-decoration:none;">
+                                        <i class="fa-regular fa-trash-can"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="p-4 bg-light rounded border">
+            <h6 class="fw-bold mb-3">Add New Residence</h6>
+            <form asp-action="AddResidence" method="post">
+                <div class="mb-4">
+                    <label class="form-label fw-bold small">Residence Name*</label>
+                    <input type="text" name="name" class="form-control bg-white" placeholder="e.g Eendrag Residence" required />
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="reset" class="btn btn-light border me-2">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="background-color: #0084D6;">Add Residence</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

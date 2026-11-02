@@ -1,0 +1,87 @@
+﻿@model IEnumerable<CUT_Maintenance_Admin.Models.Category>
+@{
+    ViewData["Title"] = "Manage Categories";
+}
+<h4 class="fw-bold mb-1">Manage Categories</h4>
+<p class="text-muted mb-4">Add, edit or remove maintenance categories. These categories are used when students submit complaints.</p>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="table-responsive table-custom">
+            <div class="d-flex justify-content-between align-items-center p-3 bg-white border-bottom">
+                <h6 class="mb-0 fw-bold">Categories(@Model.Count())</h6>
+            </div>
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Icon</th>
+                        <th>Categories Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><i class="fa-solid fa-droplet fa-lg"></i></td>
+                            <td class="fw-bold">@item.Name</td>
+                            <td class="text-muted small">@item.Description</td>
+                            <td>
+                                @if (item.IsActive == true)
+                                {
+                                    <span class="text-success fw-bold">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="text-secondary fw-bold">Inactive</span>
+                                }
+                            </td>
+                            <td>
+                                <!-- Edit Link -->
+                                <a asp-action="EditCategory" asp-route-id="@item.Id" class="text-muted me-3" style="text-decoration:none;">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+
+                                <!-- Delete Form -->
+                                <form asp-action="DeleteCategory" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this category? (If it is in use, it will be marked as Inactive).');">
+                                    <button type="submit" class="btn btn-link text-muted p-0 m-0" style="text-decoration:none;">
+                                        <i class="fa-regular fa-trash-can"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="p-4 bg-light rounded border">
+            <h6 class="fw-bold mb-3">Add New Category</h6>
+            <form asp-action="AddCategory" method="post">
+                <div class="mb-3">
+                    <label class="form-label fw-bold small">New Category*</label>
+                    <input type="text" name="name" class="form-control bg-white" placeholder="e.g Plumbing" required />
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold small">Description*</label>
+                    <textarea name="description" class="form-control bg-white" rows="4" placeholder="e.g Enter a brief description..." required></textarea>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="reset" class="btn btn-light border me-2">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="background-color: #0084D6;">Add Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

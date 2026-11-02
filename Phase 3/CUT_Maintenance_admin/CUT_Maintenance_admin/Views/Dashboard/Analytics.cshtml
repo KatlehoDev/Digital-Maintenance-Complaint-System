@@ -1,0 +1,174 @@
+﻿@{
+    ViewData["Title"] = "Analytics";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-4">
+    <div>
+        <h4 class="fw-bold mb-1">Analytics</h4>
+        <p class="text-muted mb-0">Get insights into maintenance activities, complaint trends and overall performance.</p>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-title">Total Complaints</div>
+            <div class="stat-value">@ViewBag.Total</div>
+            <div class="stat-trend"><i class="fa-solid fa-arrow-up"></i> 12%</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-title">Open</div>
+            <div class="stat-value">@ViewBag.Open</div>
+            <div class="stat-trend"><i class="fa-solid fa-arrow-up"></i> 12%</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-title">In Progress</div>
+            <div class="stat-value">@ViewBag.InProgress</div>
+            <div class="stat-trend"><i class="fa-solid fa-arrow-up"></i> 12%</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-title">Resolved</div>
+            <div class="stat-value">@ViewBag.Resolved</div>
+            <div class="stat-trend"><i class="fa-solid fa-arrow-up"></i> 12%</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Line Chart: Complaints Trend -->
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0 bg-light h-100">
+            <div class="card-body p-4">
+                <h6 class="text-muted mb-4 fw-bold">Complaints Trend (Last 6 Months)</h6>
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Horizontal Bar Chart: Top Issues -->
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 bg-light h-100">
+            <div class="card-body p-4">
+                <h6 class="text-muted mb-4 fw-bold"><i class="fa-solid fa-chart-bar text-warning"></i> Top Issues</h6>
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="issuesChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Include Chart.js from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // --- 1. TREND CHART (Line) ---
+            var ctxTrend = document.getElementById('trendChart').getContext('2d');
+            var gradient = ctxTrend.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(0, 132, 214, 0.2)'); // Blue fill
+            gradient.addColorStop(1, 'rgba(0, 132, 214, 0)');
+
+            var trendChart = new Chart(ctxTrend, {
+                type: 'line',
+                data: {
+                    labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'], // X-axis labels
+                    datasets: [{
+                        label: 'Complaints',
+                        data: [5, 8, 12, 7, 15, 10], // Hardcoded trend data for demo
+                        borderColor: '#0084D6',
+                        backgroundColor: gradient,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#0084D6',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        fill: true,
+                        tension: 0.4 // Makes the line smooth/curved
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false } // Hide the legend
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { borderDash: [5, 5] } // Dashed grid lines
+                        },
+                        x: {
+                            grid: { display: false } // Hide vertical grid lines
+                        }
+                    }
+                }
+            });
+
+            // --- 2. TOP ISSUES CHART (Horizontal Bar) ---
+            var labels = [];
+            var counts = [];
+            
+            // Loop through the C# ViewBag data to fill the chart
+            @if (ViewBag.TopIssues != null)
+            {
+                foreach (var issue in ViewBag.TopIssues)
+                {
+                    <text>labels.push("@issue.Category");</text>
+                    <text>counts.push(@issue.Count);</text>
+                }
+            }
+
+            // If no data, show some default demo data
+            if (labels.length === 0) {
+                labels = ['Plumbing', 'Electrical', 'Furniture', 'Cleaning'];
+                counts = [5, 3, 2, 1];
+            }
+
+            var ctxIssues = document.getElementById('issuesChart').getContext('2d');
+            var issuesChart = new Chart(ctxIssues, {
+                type: 'bar', // Horizontal bar chart
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: counts,
+                        backgroundColor: [
+                            '#0084D6', // Blue
+                            '#1E7E34', // Green
+                            '#D4A017', // Yellow
+                            '#E85D04', // Orange
+                            '#2A2665'  // Dark Purple
+                        ],
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', // Makes the bars horizontal
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: { display: false }
+                        },
+                        y: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

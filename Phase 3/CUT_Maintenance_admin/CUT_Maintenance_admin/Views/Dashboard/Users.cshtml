@@ -1,0 +1,94 @@
+﻿@model IEnumerable<CUT_Maintenance_Admin.Models.Profile>
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-4">
+    <div>
+        <h4 class="fw-bold mb-1">Manage Users</h4>
+        <p class="text-muted mb-0">View, search, and manage system access.</p>
+    </div>
+
+    <!-- Search Bar -->
+    <form asp-action="Users" method="get" class="search-bar mb-0" style="width: 300px;">
+        <i class="fa-solid fa-magnifying-glass text-muted"></i>
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Search by name or email..." />
+    </form>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- User Table -->
+<div class="table-responsive table-custom">
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Date Joined</th>
+                <th class="text-end pe-4">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Any())
+            {
+                @foreach (var user in Model)
+                {
+                    <tr class="align-middle">
+                        <td class="fw-bold">@(string.IsNullOrEmpty(user.FullName) ? "N/A" : user.FullName)</td>
+                        <td>@user.Email</td>
+                        <td>
+                            <span class="badge bg-@(user.Role == "admin" ? "danger" : user.Role == "hcm" ? "primary" : "success") text-capitalize">
+                                @user.Role
+                            </span>
+                        </td>
+                        <td>
+                            @if (user.IsActive == true)
+                            {
+                                <span class="badge bg-light text-success border border-success"><i class="fa-solid fa-check-circle me-1"></i> Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-light text-danger border border-danger"><i class="fa-solid fa-ban me-1"></i> Inactive</span>
+                            }
+                        </td>
+                        <td>@user.CreatedAt.ToString("dd MMM yyyy")</td>
+                        <td class="text-end pe-4">
+                            <form asp-action="ToggleUserStatus" asp-route-id="@user.Id" method="post" class="d-inline">
+                                @if (user.IsActive == true)
+                                {
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Deactivate User">
+                                        <i class="fa-solid fa-user-slash"></i> Deactivate
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-sm btn-outline-success" title="Activate User">
+                                        <i class="fa-solid fa-user-check"></i> Activate
+                                    </button>
+                                }
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center py-5 text-muted">
+                        <h5>No users found.</h5>
+                        <p class="mb-0">Try adjusting your search query.</p>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
